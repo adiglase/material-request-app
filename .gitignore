@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+coverage/
+
+.agents/
+skills-lock.json
+
+.DS_Store
+.vscode/
+.idea/
