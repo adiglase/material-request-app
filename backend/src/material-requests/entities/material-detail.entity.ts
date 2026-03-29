@@ -39,8 +39,16 @@ export class MaterialDetail {
   @Column({ type: 'text', nullable: true })
   specification: string | null;
 
-  @Column({ type: 'numeric', precision: 12, scale: 2 })
-  quantity: string;
+  @Column({
+    type: 'numeric',
+    precision: 12,
+    scale: 2,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => Number(value),
+    },
+  })
+  quantity: number;
 
   @Column({ type: 'varchar', length: 30 })
   unit: string;
