@@ -2,15 +2,14 @@ import { Transform, Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
-  IsDateString,
   IsNotEmpty,
   IsOptional,
   IsString,
-  Matches,
   MaxLength,
   ValidateNested,
 } from 'class-validator';
 import { CreateMaterialDetailDto } from './create-material-detail.dto';
+import { IsIsoDateOnly } from './is-iso-date-only.decorator';
 import { trimOptionalString, trimRequiredString } from './utils';
 
 export class CreateMaterialRequestDto {
@@ -20,10 +19,7 @@ export class CreateMaterialRequestDto {
   @MaxLength(30)
   requestNumber: string;
 
-  @IsDateString()
-  @Matches(/^\d{4}-\d{2}-\d{2}$/, {
-    message: 'requestDate must be in YYYY-MM-DD format',
-  })
+  @IsIsoDateOnly()
   requestDate: string;
 
   @Transform(({ value }) => trimRequiredString(value))
