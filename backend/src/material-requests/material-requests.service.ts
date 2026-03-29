@@ -1,13 +1,18 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { isUniqueConstraintViolation } from '../common/database/query-error.util';
 import { CreateMaterialRequestDto } from './dto/create-material-request.dto';
-import { MaterialRequest } from './entities/material-request.entity';
+import { ListMaterialRequestsQueryDto } from './dto/list-material-requests-query.dto';
 import { MaterialDetail } from './entities/material-detail.entity';
+import { MaterialRequest } from './entities/material-request.entity';
+import { MaterialRequestsRepository } from './material-requests.repository';
 
 @Injectable()
 export class MaterialRequestsService {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(
+    private readonly dataSource: DataSource,
+    private readonly materialRequestsRepository: MaterialRequestsRepository,
+  ) {}
 
   async create(dto: CreateMaterialRequestDto) {
     try {
@@ -40,7 +45,7 @@ export class MaterialRequestsService {
 
         const savedDetail = await manager.save(MaterialDetail, materialDetails);
 
-        return this.toCreateResponse(savedRequest, savedDetail);
+        return this.toDetailResponse(savedRequest, savedDetail);
       });
     } catch (error) {
       if (this.isRequestNumberConflict(error)) {
@@ -51,11 +56,50 @@ export class MaterialRequestsService {
     }
   }
 
-  private toCreateResponse(
+  async findAll(query: ListMaterialRequestsQueryDto) {
+    const { materialRequests, total } =
+      await this.materialRequestsRepository.findListPage(query);
+
+    return {
+      data: materialRequests.map((materialRequest) => ({
+        id: materialRequest.id,
+        requestNumber: materialRequest.requestNumber,
+        requestDate: materialRequest.requestDate,
+        requesterName: materialRequest.requesterName,
+        purpose: materialRequest.purpose,
+        createdAt: materialRequest.createdAt,
+        updatedAt: materialRequest.updatedAt,
+      })),
+      meta: {
+        page: query.page,
+        pageSize: query.pageSize,
+        total,
+        totalPages: Math.ceil(total / query.pageSize),
+      },
+    };
+  }
+
+  async findOne(id: number) {
+    const materialRequest = await this.materialRequestsRepository.findDetailById(
+      id,
+    );
+
+    if (!materialRequest) {
+      throw new NotFoundException(`Material request #${id} not found.`);
+    }
+
+    return this.toDetailResponse(
+      materialRequest,
+      materialRequest.materialDetails,
+    );
+  }
+
+  private toDetailResponse(
     materialRequest: MaterialRequest,
     materialDetails: MaterialDetail[],
   ) {
-    // Return explicit API shape
+    // Return an explicit API shape so controller responses stay stable even if
+    // entity internals or ORM configuration change later.
     return {
       data: {
         id: materialRequest.id,
@@ -73,7 +117,7 @@ export class MaterialRequestsService {
           description: detail.description,
           category: detail.category,
           specification: detail.specification,
-          quantity: Number(detail.quantity),
+          quantity: detail.quantity,
           unit: detail.unit,
           remarks: detail.remarks,
           createdAt: detail.createdAt,
