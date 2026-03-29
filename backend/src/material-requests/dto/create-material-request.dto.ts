@@ -38,7 +38,7 @@ export class CreateMaterialRequestDto {
   @IsString()
   notes?: string;
 
-  // A material request without detail rows is incomplete, so reject it early.
+  // Reject early if material details is not an array os is empty
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })

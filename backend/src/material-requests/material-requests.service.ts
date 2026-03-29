@@ -137,8 +137,6 @@ export class MaterialRequestsService {
     materialRequest: MaterialRequest,
     materialDetails: MaterialDetail[],
   ) {
-    // Return an explicit API shape so controller responses stay stable even if
-    // entity internals or ORM configuration change later.
     return {
       data: {
         id: materialRequest.id,

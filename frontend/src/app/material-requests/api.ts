@@ -2,6 +2,7 @@ import "server-only";
 
 import { buildApiQueryString } from "./helpers";
 import type {
+  MaterialRequestDetailResponse,
   MaterialRequestListResponse,
   MaterialRequestSearchParams,
 } from "./types";
@@ -25,6 +26,22 @@ export async function getMaterialRequests(
   }
 
   return (await response.json()) as MaterialRequestListResponse;
+}
+
+export async function getMaterialRequestById(id: number) {
+  const response = await fetch(`${API_BASE_URL}/material-requests/${id}`, {
+    cache: "no-store",
+  });
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch material request #${id}.`);
+  }
+
+  return (await response.json()) as MaterialRequestDetailResponse;
 }
 
 export async function deleteMaterialRequestById(id: number) {
