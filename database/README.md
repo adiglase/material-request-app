@@ -5,6 +5,7 @@ This folder contains the PostgreSQL schema for the technical assessment.
 Main file:
 
 - [schema.sql](./schema.sql)
+- [seed.sql](./seed.sql)
 
 ## Tables
 
@@ -22,5 +23,13 @@ Main file:
 - `request_number` is unique
 - deleting a request also deletes its detail rows with `ON DELETE CASCADE`
 - both tables include `created_at` and `updated_at`
-
 - most field validation will be handled in NestJS with DTOs and `ValidationPipe`
+
+## Local Setup
+
+Run the schema first, then load demo data:
+
+```bash
+psql -h localhost -U your_db_user -d your_database_name -f schema.sql
+psql -h localhost -U your_db_user -d your_database_name -f seed.sql
+```

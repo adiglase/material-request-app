@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS material_details;
+DROP TABLE IF EXISTS material_requests;
+
 CREATE TABLE material_requests (
   id SERIAL PRIMARY KEY,
   request_number VARCHAR(30) NOT NULL,
@@ -23,7 +26,8 @@ CREATE TABLE material_details (
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_material_details_request_id
-    FOREIGN KEY (request_id) REFERENCES material_requests(id) ON DELETE CASCADE
+    FOREIGN KEY (request_id) REFERENCES material_requests(id) ON DELETE CASCADE,
+  CONSTRAINT chk_material_details_quantity_positive CHECK (quantity > 0)
 );
 
 CREATE INDEX idx_material_requests_request_date_id
@@ -31,3 +35,6 @@ CREATE INDEX idx_material_requests_request_date_id
 
 CREATE INDEX idx_material_requests_requester_name
   ON material_requests (requester_name);
+
+CREATE INDEX idx_material_details_request_id
+  ON material_details (request_id);

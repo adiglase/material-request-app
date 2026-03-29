@@ -8,3 +8,6 @@ Technical test project for a simple Material Request application built with Nest
 - `frontend/` Next.js application
 - `database/` SQL schema and seed files
 
+## Database Setup
+
+For schema and seed setup instructions, see [database/README.md](./database/README.md).
