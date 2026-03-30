@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DeleteButton } from "./delete-button";
 import { deleteMaterialRequestAction } from "../actions";
 import { buildListPageUrl } from "../helpers";
 import type {
@@ -13,7 +14,7 @@ type Props = {
 
 export function MaterialRequestsTable({ response, searchParams }: Props) {
   if (response.data.length === 0) {
-    return <p className="text-sm text-gray-500 py-6">No material requests found.</p>;
+    return <p className="max-w-7xl mx-auto px-5 text-sm text-gray-500 py-6">No material requests found.</p>;
   }
 
   const totalPages = Math.max(response.meta.totalPages, 1);
@@ -44,13 +45,11 @@ export function MaterialRequestsTable({ response, searchParams }: Props) {
                   <Link href={`/material-requests/${request.id}/edit`} className="text-gray-900 no-underline hover:underline">
                     Edit
                   </Link>
-                  <form action={deleteMaterialRequestAction}>
-                    <input type="hidden" name="id" value={request.id} />
-                    <input type="hidden" name="redirectTo" value={currentListUrl} />
-                    <button type="submit" className="text-red-600 cursor-pointer hover:underline">
-                      Delete
-                    </button>
-                  </form>
+                  <DeleteButton
+                    action={deleteMaterialRequestAction}
+                    id={request.id}
+                    redirectTo={currentListUrl}
+                  />
                 </div>
               </td>
             </tr>
