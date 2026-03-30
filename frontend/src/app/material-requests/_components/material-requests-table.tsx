@@ -42,6 +42,9 @@ export function MaterialRequestsTable({ response, searchParams }: Props) {
               <td className="px-4 py-3 text-gray-600">{request.purpose}</td>
               <td className="px-4 py-3">
                 <div className="flex gap-3">
+                  <Link href={`/material-requests/${request.id}`} className="text-gray-900 no-underline hover:underline">
+                    View
+                  </Link>
                   <Link href={`/material-requests/${request.id}/edit`} className="text-gray-900 no-underline hover:underline">
                     Edit
                   </Link>
