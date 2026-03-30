@@ -33,8 +33,5 @@ CREATE TABLE material_details (
 CREATE INDEX idx_material_requests_request_date_id
   ON material_requests (request_date DESC, id DESC);
 
-CREATE INDEX idx_material_requests_requester_name
-  ON material_requests (requester_name);
-
 CREATE INDEX idx_material_details_request_id
   ON material_details (request_id);

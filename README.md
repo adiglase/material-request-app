@@ -26,7 +26,7 @@ database/   SQL schema and seed files
 Create the database first (replace `<user>` with your PostgreSQL username):
 
 ```bash
-psql -U <user> -c "CREATE DATABASE material_request_db;"
+psql -h localhost -U <user> -c "CREATE DATABASE material_request_db;"
 ```
 
 Then run the schema and (optionally) the seed data:
@@ -44,6 +44,8 @@ cp .env.example .env   # then edit .env with your database credentials
 npm install
 npm run start:dev
 ```
+
+> **Windows CMD**: use `copy .env.example .env` instead of `cp`.
 
 The API will be available at `http://localhost:3001`.
 
@@ -66,6 +68,8 @@ cp .env.example .env
 npm install
 npm run dev
 ```
+
+> **Windows CMD**: use `copy .env.example .env` instead of `cp`.
 
 The app will be available at `http://localhost:3000`.
 
@@ -160,10 +164,9 @@ Two tables with a one-to-many relationship:
 
 **No ORM migrations**: Schema is managed through plain SQL files in `database/`. `synchronize: false` in TypeORM ensures the ORM never auto-modifies the database schema. This is based on the test description that require to include the DB schema.
 
-**Database indexes**: Three indexes are defined to support the actual query patterns:
+**Database indexes**: Two indexes are defined to support the actual query patterns:
 
 - `(request_date DESC, id DESC)` on `material_requests`: matches the default sort order of the list query exactly, so PostgreSQL can satisfy the sort without a separate sort step
-- `(requester_name)` on `material_requests`: supports the requester name filter which uses a `ILIKE` pattern match
 - `(request_id)` on `material_details`: speeds up the join when fetching a single request with all its detail rows
 
 ## Known Limitations
