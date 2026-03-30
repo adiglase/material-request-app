@@ -10,7 +10,7 @@ Material Request management system built with NestJS, Next.js, and PostgreSQL fo
 
 ## Prerequisites
 
-- Node.js 18+ (tested in Node.js 24)
+- Node.js 20+ (tested in Node.js 22 and 24)
 - PostgreSQL 14+ (tested in Postgres 17)
 
 ## Repository Structure
@@ -165,6 +165,10 @@ Two tables with a one-to-many relationship:
 - `(request_date DESC, id DESC)` on `material_requests`: matches the default sort order of the list query exactly, so PostgreSQL can satisfy the sort without a separate sort step
 - `(requester_name)` on `material_requests`: supports the requester name filter which uses a `ILIKE` pattern match
 - `(request_id)` on `material_details`: speeds up the join when fetching a single request with all its detail rows
+
+## Known Limitations
+
+- Update (PUT) replaces all material details on every save rather than patching individual rows
 
 ## Tradeoffs and Non-Goals
 
